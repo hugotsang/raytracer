@@ -7,7 +7,7 @@ class Sphere : public Volume {
 public:
 	Point3 m_center;
 	double m_radius;
-	std::shared_ptr<Material> m_matierial;
+	std::shared_ptr<Material> m_material;
 
 public:
 	Sphere()
@@ -16,7 +16,7 @@ public:
 	Sphere(Point3 center, double radius, std::shared_ptr<Material> material)
 		: m_center{center},
 		  m_radius{radius},
-		  m_matierial{material} {}
+		  m_material{material} {}
 
 	bool hit(const Ray &r, double tMin, double tMax, HitRecord &rec) const final;
 
@@ -45,7 +45,7 @@ bool Sphere::hit(const Ray &r, double tMin, double tMax, HitRecord &rec) const {
 	rec.p = r.at(rec.t);
 	Vec3 outwardNormal = (rec.p - m_center) / m_radius;
 	rec.setFaceNormal(r, outwardNormal);
-	rec.material = m_matierial;
+	rec.material = m_material;
 
 	return true;
 }

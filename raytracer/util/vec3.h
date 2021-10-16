@@ -52,6 +52,50 @@ public:
 			&& (fabs(m_e[2]) < s);
 	}
 
+	friend std::ostream &operator<<(std::ostream &out, const Vec3 &v) {
+		return out << v.m_e[0] << v.m_e[1] << v.m_e[2];
+	}
+
+	friend Vec3 operator+(const Vec3 &v1, const Vec3 &v2) {
+		return Vec3(v1.m_e[0] + v2.m_e[0], v1.m_e[1] + v2.m_e[1], v1.m_e[2] + v2.m_e[2]);
+	}
+
+	friend Vec3 operator-(const Vec3 &v1, const Vec3 &v2) {
+		return Vec3(v1.m_e[0] - v2.m_e[0], v1.m_e[1] - v2.m_e[1], v1.m_e[2] - v2.m_e[2]);
+	}
+
+	friend Vec3 operator*(const Vec3 &v1, const Vec3 &v2) {
+		return Vec3(v1.m_e[0] * v2.m_e[0], v1.m_e[1] * v2.m_e[1], v1.m_e[2] * v2.m_e[2]);
+	}
+
+	friend Vec3 operator*(double t, const Vec3 &v) {
+		return Vec3(t * v.m_e[0], t * v.m_e[1], t * v.m_e[2]);
+	}
+
+	friend Vec3 operator*(const Vec3 &v, double t) {
+		return t * v;
+	}
+
+	friend Vec3 operator/(Vec3 v, double t) {
+		return (1 / t) * v;
+	}
+
+	static double dot(const Vec3 &v1, const Vec3 &v2) {
+		return v1.m_e[0] * v2.m_e[0]
+			+ v1.m_e[1] * v2.m_e[1]
+			+ v1.m_e[2] * v2.m_e[2];
+	}
+
+	static Vec3 cross(const Vec3 &v1, const Vec3 &v2) {
+		return Vec3(v1.m_e[1] * v2.m_e[2] - v1.m_e[2] * v2.m_e[1],
+			v1.m_e[2] * v2.m_e[0] - v1.m_e[0] * v2.m_e[2],
+			v1.m_e[0] * v2.m_e[1] - v1.m_e[1] * v2.m_e[0]);
+	}
+
+	static Vec3 unitVector(Vec3 v) {
+		return v / v.length();
+	}
+
 	static Vec3 random(double min, double max) {
 		return Vec3(MathsHelper::randomDouble(min, max),
 			MathsHelper::randomDouble(min, max),
@@ -79,53 +123,13 @@ public:
 		else
 			return -inUnitSphere;
 	}
+
+	static Vec3 reflect(const Vec3 &v, const Vec3 &n) {
+		return v - 2 * dot(v, n) * n;
+	}
 public:
 	double m_e[3];
 };
 
 using Point3 = Vec3;
 using Rgb = Vec3;
-
-inline std::ostream &operator<<(std::ostream &out, const Vec3 &v) {
-	return out << v.m_e[0] << v.m_e[1] << v.m_e[2];
-}
-
-inline Vec3 operator+(const Vec3 &v1, const Vec3 &v2) {
-	return Vec3(v1.m_e[0] + v2.m_e[0], v1.m_e[1] + v2.m_e[1], v1.m_e[2] + v2.m_e[2]);
-}
-
-inline Vec3 operator-(const Vec3 &v1, const Vec3 &v2) {
-	return Vec3(v1.m_e[0] - v2.m_e[0], v1.m_e[1] - v2.m_e[1], v1.m_e[2] - v2.m_e[2]);
-}
-
-inline Vec3 operator*(const Vec3 &v1, const Vec3 &v2) {
-	return Vec3(v1.m_e[0] * v2.m_e[0], v1.m_e[1] * v2.m_e[1], v1.m_e[2] * v2.m_e[2]);
-}
-
-inline Vec3 operator*(double t, const Vec3 &v) {
-	return Vec3(t * v.m_e[0], t * v.m_e[1], t * v.m_e[2]);
-}
-
-inline Vec3 operator*(const Vec3 &v, double t) {
-	return t * v;
-}
-
-inline Vec3 operator/(Vec3 v, double t) {
-	return (1 / t) * v;
-}
-
-inline double dot(const Vec3& v1, const Vec3& v2) {
-	return v1.m_e[0] * v2.m_e[0]
-		+ v1.m_e[1] * v2.m_e[1]
-		+ v1.m_e[2] * v2.m_e[2];
-}
-
-inline Vec3 cross(const Vec3& v1, const Vec3& v2) {
-	return Vec3(v1.m_e[1] * v2.m_e[2] - v1.m_e[2] * v2.m_e[1],
-				v1.m_e[2] * v2.m_e[0] - v1.m_e[0] * v2.m_e[2],
-				v1.m_e[0] * v2.m_e[1] - v1.m_e[1] * v2.m_e[0]);
-}
-
-inline Vec3 unitVector(Vec3 v) {
-	return v / v.length();
-}
