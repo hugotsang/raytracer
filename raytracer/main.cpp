@@ -1,10 +1,13 @@
-#include <iostream>
 #include "util/mathsHelper.h"
 #include "util/colourHelper.h"
 #include "util/userInput.h"
 #include "shapes/sphere.h"
 #include "shapes/volumeList.h"
 #include "viewport/camera.h"
+#include "viewport/graphicsWindow.h"
+
+// STD Header Files
+#include <iostream>
 
 // Windows Header Files
 #include <windows.h>
@@ -98,7 +101,7 @@ void appEntry() {
             ColourHelper::writeColour(std::cout, pixelColour, samplesPerPixel);
         }
     }
-
+    std::cerr << "\nDone\n";
 }
 
 bool appUpdate(float elapsedTime) {
@@ -106,6 +109,7 @@ bool appUpdate(float elapsedTime) {
 }
 
 int appExit() {
+
     return 0;
 }
 
@@ -123,6 +127,11 @@ int main() {
     QueryPerformanceFrequency(&frequency);
 
     while (!quit) {
+        if (!GraphicsWindow::instance().processMessages()) {
+            std::cerr << "closing window \n";
+            return false;
+        }
+        
         do {
             QueryPerformanceCounter(&now);
             elapsedTime = (now.QuadPart - lastDrawTime.QuadPart) * 1000.0 / frequency.QuadPart;
@@ -131,6 +140,6 @@ int main() {
 
         quit = appUpdate(static_cast<float>(elapsedTime) / 1000.0f);
     }
-    std::cerr << "\nDone\n";
     appExit();
+    return 0;
 }
