@@ -4,7 +4,8 @@
 #include "shapes/sphere.h"
 #include "shapes/volumeList.h"
 #include "viewport/camera.h"
-#include "viewport/graphicsWindow.h"
+#include "viewport/displayBuffer.h"
+#include "viewport/displayWindow.h"
 
 // STD Header Files
 #include <iostream>
@@ -63,9 +64,6 @@ Rgb rayColour(const Ray& r, const Volume & world, int depth) {
 
 void appEntry() {
     // Image
-    const auto aspectRatio = 16.0 / 9.0;
-    const int imageWidth = 400;
-    const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
     const int samplesPerPixel = 100;
     const int maxDepth = 20;
 
@@ -86,7 +84,12 @@ void appEntry() {
     Camera cam;
 
     // Render
-    std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
+    // ppm file Header
+    //std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
+    const auto imageWidth = DisplayBuffer::instance().getWidth();
+    const auto imageHeight = DisplayBuffer::instance().getHeight();
+
+    DisplayWindow::instance().drawWindow();
 
     for (int j = imageHeight - 1; j >= 0; --j) {
         std::cerr << "\rScanlines remaining" << j << ' ' << std::flush;
@@ -98,8 +101,10 @@ void appEntry() {
                 Ray r = cam.getRay(u, v);
                 pixelColour += rayColour(r, world, maxDepth);
             }
-            ColourHelper::writeColour(std::cout, pixelColour, samplesPerPixel);
+            ColourHelper::writeColourOutput(std::cout, pixelColour, samplesPerPixel);
+            DisplayWindow::instance().drawPixel(pixelColour);
         }
+        DisplayWindow::instance().drawWindow();
     }
     std::cerr << "\nDone\n";
 }
@@ -115,19 +120,27 @@ int appExit() {
 
 int main() {
 
-    appEntry();
     bool quit = false;
     double elapsedTime = 0.0;
     LARGE_INTEGER now;
+
+    // App dimensions
+    const auto aspectRatio = 16.0 / 9.0;
+    const int width = 400;
+    const int height = static_cast<int>(width / aspectRatio);
 
     // Set up counters for timing the frame
     static LARGE_INTEGER lastDrawTime;
     LARGE_INTEGER frequency;
     QueryPerformanceCounter(&lastDrawTime);
     QueryPerformanceFrequency(&frequency);
+    DisplayWindow::createInstance(width, height);
+    DisplayBuffer::createInstance(width, height);
+
+    appEntry();
 
     while (!quit) {
-        if (!GraphicsWindow::instance().processMessages()) {
+        if (!DisplayWindow::instance().processMessages()) {
             std::cerr << "closing window \n";
             return false;
         }

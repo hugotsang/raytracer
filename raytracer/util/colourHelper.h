@@ -6,7 +6,7 @@
 #include <iostream>
 
 namespace ColourHelper {
-	void writeColour(std::ostream &out, Rgb pixelColour, int samplesPerPixel) {
+	void writeColourOutput(std::ostream &out, Rgb pixelColour, int samplesPerPixel) {
         auto r = pixelColour.x();
         auto g = pixelColour.y();
         auto b = pixelColour.z();
