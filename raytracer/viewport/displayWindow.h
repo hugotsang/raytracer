@@ -57,13 +57,6 @@ public:
 	}
 
 	void drawPixel(Rgb pixel) {
-		//uint32_t *buf = (uint32_t *)m_dBuf;
-		//uint32_t argb = (0xFF << 24) 
-		//				| (static_cast<uint8_t>(pixel.x()) << 16)
-		//				| (static_cast<uint8_t>(pixel.y()) << 8)
-		//				| (static_cast<uint8_t>(pixel.z()));
-		//*buf = argb;
-		//++buf;
 		m_imageVect.push_back(pixel);
 		m_imageVect;
 	}
@@ -73,13 +66,14 @@ public:
 		BITMAPINFOHEADER bitmap_info_header
 		{
 				sizeof(BITMAPINFOHEADER),								// size of its own data,
-				m_width, m_height,		// width and height
+				m_width, -m_height,		// width and height
 				1, 32, BI_RGB,				// planes must always be set to 1 (docs), 32-bit pixel data, uncompressed 
 				0, 0, 0, 0, 0				// rest can be set to 0 as this is uncompressed and has no palette
 		};
 
 		BITMAPINFO bitmap_info{bitmap_info_header, { 0,0,0,0 }};	// No palette data required for this bitmap
 
+		// Write to display buffer
 		uint32_t *buf = (uint32_t *)m_dBuf;
 		for (const Rgb &pixel : m_imageVect) {
 		uint32_t argb = (0xFF << 24) 
@@ -87,7 +81,6 @@ public:
 						| (static_cast<uint8_t>(pixel.y()) << 8)
 						| (static_cast<uint8_t>(pixel.z()));
 		*buf = argb;
-		//*buf = 0xFFFF0000;
 		++buf;
 		}
 

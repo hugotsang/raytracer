@@ -89,7 +89,7 @@ void appEntry() {
     const auto imageWidth = DisplayBuffer::instance().getWidth();
     const auto imageHeight = DisplayBuffer::instance().getHeight();
 
-    DisplayWindow::instance().drawWindow();
+    //DisplayWindow::instance().drawWindow();
 
     for (int j = imageHeight - 1; j >= 0; --j) {
         std::cerr << "\rScanlines remaining" << j << ' ' << std::flush;
@@ -101,7 +101,8 @@ void appEntry() {
                 Ray r = cam.getRay(u, v);
                 pixelColour += rayColour(r, world, maxDepth);
             }
-            ColourHelper::writeColourOutput(std::cout, pixelColour, samplesPerPixel);
+            //ColourHelper::writeColourOutput(std::cout, pixelColour, samplesPerPixel);
+            ColourHelper::colourPostprocess(pixelColour, samplesPerPixel);
             DisplayWindow::instance().drawPixel(pixelColour);
         }
         DisplayWindow::instance().drawWindow();
