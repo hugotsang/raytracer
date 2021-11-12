@@ -72,8 +72,8 @@ void appEntry() {
 
     auto material_ground = std::make_shared<Lambertian>(Rgb(0.8, 0.8, 0.0));
     auto material_center = std::make_shared<Lambertian>(Rgb(0.7, 0.3, 0.3));
-    auto material_left = std::make_shared<Metal>(Rgb(0.8, 0.8, 0.8));
-    auto material_right = std::make_shared<Metal>(Rgb(0.8, 0.6, 0.2));
+    auto material_left = std::make_shared<Metal>(Rgb(0.8, 0.8, 0.8), 0.3);
+    auto material_right = std::make_shared<Metal>(Rgb(0.8, 0.6, 0.2), 0.8);
 
     world.add(std::make_shared<Sphere>(Point3(0.0, -100.5, -1.0), 100.0, material_ground));
     world.add(std::make_shared<Sphere>(Point3(0.0, 0.0, -1.0), 0.5, material_center));
@@ -89,7 +89,6 @@ void appEntry() {
     const auto imageWidth = DisplayBuffer::instance().getWidth();
     const auto imageHeight = DisplayBuffer::instance().getHeight();
 
-    //DisplayWindow::instance().drawWindow();
 
     for (int j = imageHeight - 1; j >= 0; --j) {
         std::cerr << "\rScanlines remaining" << j << ' ' << std::flush;

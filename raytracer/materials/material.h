@@ -42,12 +42,17 @@ public:
 class Metal : public Material {
 public:
 	Rgb m_albedo;
+	double m_fuzz;
+
 public:
-	Metal(const Rgb &albedo) : m_albedo(albedo) {}
+	Metal(const Rgb &albedo, double fuzz)
+		: m_albedo(albedo),
+		m_fuzz(fuzz < 1 ? fuzz : 1) {
+	}
 
 	bool scatter(const Ray &rIn, const HitRecord &rec, Rgb &attenuation, Ray &scattered) const final {
 		Vec3 reflected = Vec3::reflect(Vec3::unitVector(rIn.direction()), rec.normal);
-		scattered = Ray(rec.p, reflected);
+		scattered = Ray(rec.p, reflected + m_fuzz * Vec3::randomInUnitSphere());
 		attenuation = m_albedo;
 		return (Vec3::dot(scattered.direction(), rec.normal) > 0);
 	}
