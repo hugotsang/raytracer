@@ -13,6 +13,5 @@ public:
 	}
 
 private:
-	UserInput() {
-	}
+	UserInput() = default;
 };

@@ -93,6 +93,10 @@ public:
 			DIB_RGB_COLORS,
 			SRCCOPY);
 	}
+
+	double getAspectRation() const {
+		return static_cast<double>(m_width) / static_cast<double>(m_height);
+	}
 private:
 	DisplayWindow(int width, int height, const char *path)
 		: m_width{width},

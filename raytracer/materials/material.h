@@ -56,6 +56,45 @@ public:
 		attenuation = m_albedo;
 		return (Vec3::dot(scattered.direction(), rec.normal) > 0);
 	}
+};
 
+class Dielectric : public Material {
+public:
+	double m_refractiveIndex;
+
+public:
+	Dielectric(double refractiveIndex)
+		: m_refractiveIndex(refractiveIndex) {}
+
+	bool scatter(const Ray &rIn, const HitRecord &rec, Rgb &attenuation, Ray &scattered) const final {
+		attenuation = Rgb(1.0, 1.0, 1.0);
+		double refractionRatio = rec.frontFace ? (1 / m_refractiveIndex) : m_refractiveIndex;
+
+		Vec3 unitDirection = Vec3::unitVector(rIn.direction());
+		
+		// calculate if total internal reflection allowed based on sin0` = n/n` * sin0
+		// n/n` = refraction ratio (refractive index ratio of the 2 materials)
+		// refractive index of air = ~1.0
+		// refractive index of glass = ~1.5
+		double cosTheta = std::fmin(Vec3::dot(-unitDirection, rec.normal), 1);
+		double sinTheta = std::sqrt(1.0 - cosTheta * cosTheta);
+		bool cannotRefract = (refractionRatio * sinTheta) > 1.0;
+		Vec3 direction;
+		if (cannotRefract || (reflectance(cosTheta, refractionRatio) > MathsHelper::randomDouble())) {
+			direction = Vec3::reflect(unitDirection, rec.normal);
+		} else {
+			direction = Vec3::refract(unitDirection, rec.normal, refractionRatio);
+		}
+
+		scattered = Ray(rec.p, direction);
+		return true;
+	}
+private:
+	static double reflectance(double cosine, double refIndex) {
+		// Use Schlick's approximation for reflectance
+		auto r0 = (1 - refIndex) / (1 + refIndex);
+		r0 *= r0;
+		return r0 + (1 - r0) * std::pow((1 - cosine), 5);
+	}
 };
 #endif

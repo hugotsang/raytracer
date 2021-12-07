@@ -125,7 +125,19 @@ public:
 	}
 
 	static Vec3 reflect(const Vec3 &v, const Vec3 &n) {
+		// reflected ray = v + 2b
+		// v = ray vector
+		// b = y of v
 		return v - 2 * dot(v, n) * n;
+	}
+
+	static Vec3 refract(const Vec3 &uv, const Vec3 &n, double refractionRatio) {
+		// snell's law
+		// sin n1 = n/n1 * sin n
+		auto cosTheta = std::fmin(dot(-uv, n), 1);
+		Vec3 rPerpendicular = refractionRatio * (uv + cosTheta * n);
+		Vec3 rParallel = -std::sqrt(std::fabs(1.0 - rPerpendicular.lengthSquared())) * n;
+		return rPerpendicular + rParallel;
 	}
 public:
 	double m_e[3];
