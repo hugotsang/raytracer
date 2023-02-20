@@ -13,26 +13,12 @@
 namespace MathsHelper {
 	const double s_infinity = std::numeric_limits<double>::infinity();
 
-	double degreesToRadians(double degrees) {
-		return (degrees * M_PI) / 180;
-	}
+	double degreesToRadians(double degrees);
 
-	double randomDouble() {
-		// Returns a random real in [0,1).
-		return rand() / (RAND_MAX + 1.0);
-	}
+	double randomDouble();
 
-	double randomDouble(double min, double max) {
-		// Returns a random real in [min,max).
-		return min + (max - min) * randomDouble();
-	}
+	double randomDouble(double min, double max);
 
-	inline double clamp(double x, double min, double max) {
-		if (x < min)
-			return min;
-		if (x > max)
-			return max;
-		return x;
-	}
+	double clamp(double x, double min, double max);
 }
 

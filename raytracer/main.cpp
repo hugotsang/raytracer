@@ -1,14 +1,19 @@
-#include "util/mathsHelper.h"
 #include "util/colourHelper.h"
 #include "util/userInput.h"
+//#include "util/threadpool.h"
 #include "shapes/sphere.h"
+#include "shapes/cube.h"
 #include "shapes/volumeList.h"
+#include "materials/dielectric.h"
+#include "materials/lambertian.h"
+#include "materials/metal.h"
 #include "viewport/camera.h"
 #include "viewport/displayBuffer.h"
 #include "viewport/displayWindow.h"
 
 // STD Header Files
 #include <iostream>
+#include <chrono>
 
 // Windows Header Files
 #include <windows.h>
@@ -45,17 +50,18 @@ Vec3 randomInHemisphere(const Vec3 &normal) {
         return -inUnitSphere;
 }
 
-Rgb rayColour(const Ray& r, const Volume & world, int depth) {
+Rgb rayColour(const Ray& r, const Volume& world, int depth) {
     HitRecord rec;
     if (depth <= 0)
         return Rgb(0, 0, 0);
 
     if (world.hit(r, 0.001, MathsHelper::s_infinity, rec)) {
-        Ray scattered;
-        Rgb attenuation;
-        if (rec.material->scatter(r, rec, attenuation, scattered))
-            return attenuation * rayColour(scattered, world, depth - 1);
-        return Rgb(0, 0, 0);
+        //Ray scattered;
+        //Rgb attenuation;
+        //if (rec.material->scatter(r, rec, attenuation, scattered))
+        //    return attenuation * rayColour(scattered, world, depth - 1);
+        //return Rgb(0, 0, 0);
+        return Rgb(255, 0, 0);
     }
     Vec3 unitDirection = Vec3::unitVector(r.direction());
     auto t = 0.5 * (unitDirection.y() + 1.0);
@@ -63,6 +69,8 @@ Rgb rayColour(const Ray& r, const Volume & world, int depth) {
 }
 
 void appEntry() {
+    auto start = std::chrono::system_clock::now();
+    std::cerr << "\nStart " << start.time_since_epoch().count() << "\n";
     // Image
     const int samplesPerPixel = 100;
     const int maxDepth = 20;
@@ -77,11 +85,12 @@ void appEntry() {
     auto materialLeft = std::make_shared<Dielectric>(1.5);
     auto materialRight = std::make_shared<Metal>(Rgb(0.8, 0.6, 0.2), 0.8);
 
-    world.add(std::make_shared<Sphere>(Point3(0.0, -100.5, -1.0), 100.0, materialGround));
-    world.add(std::make_shared<Sphere>(Point3(0.0, 0.0, -1.0), 0.5, materialCenter));
-    world.add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), 0.5, materialLeft));
-    world.add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), -0.4, materialLeft));
-    world.add(std::make_shared<Sphere>(Point3(1.0, 0.0, -1.0), 0.5, materialRight));
+    //world.add(std::make_shared<Sphere>(Point3(0.0, -100.5, -1.0), 100.0, materialGround));
+    world.add(std::make_shared<Cube>(Point3(0.0, 0.0, -1.0), 1, materialCenter));
+    //world.add(std::make_shared<Sphere>(Point3(0.0, 0.0, -1.0), 0.5, materialCenter));
+    //world.add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), 0.5, materialLeft));
+    //world.add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), -0.4, materialLeft));
+    //world.add(std::make_shared<Sphere>(Point3(1.0, 0.0, -1.0), 0.5, materialRight));
 
     // Camera
     Camera cam(Point3(-2, 2, 1),
@@ -97,7 +106,7 @@ void appEntry() {
 
 
     for (int j = imageHeight - 1; j >= 0; --j) {
-        std::cerr << "\rScanlines remaining" << j << ' ' << std::flush;
+        std::cerr << "\rScanlines remaining " << j << ' ' << std::flush;
         for (int i = 0; i < imageWidth; ++i) {
             Rgb pixelColour(0, 0, 0);
             for (int s = 0; s < samplesPerPixel; ++s) {
@@ -112,7 +121,8 @@ void appEntry() {
         }
         DisplayWindow::instance().drawWindow();
     }
-    std::cerr << "\nDone\n";
+    auto end = std::chrono::system_clock::now();
+    std::cerr << "\nDone " << end.time_since_epoch().count() << " " << (end.time_since_epoch() - start.time_since_epoch()).count() << "\n";;
 }
 
 bool appUpdate(float elapsedTime) {

@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "mathsHelper.h"
 
 using std::sqrt;
 
@@ -24,6 +25,7 @@ public:
 		m_e[2] += v.m_e[2];
 		return *this;
 	}
+
 
 	Vec3& operator*=(const double t) {
 		m_e[0] *= t;
@@ -60,8 +62,16 @@ public:
 		return Vec3(v1.m_e[0] + v2.m_e[0], v1.m_e[1] + v2.m_e[1], v1.m_e[2] + v2.m_e[2]);
 	}
 
+	friend Vec3 operator+(const Vec3 &v1, double val) {
+		return Vec3(v1.m_e[0] + val, v1.m_e[1] + val, v1.m_e[2] + val);
+	}
+
 	friend Vec3 operator-(const Vec3 &v1, const Vec3 &v2) {
 		return Vec3(v1.m_e[0] - v2.m_e[0], v1.m_e[1] - v2.m_e[1], v1.m_e[2] - v2.m_e[2]);
+	}
+
+	friend Vec3 operator-(const Vec3 &v1, double val) {
+		return Vec3(v1.m_e[0] - val, v1.m_e[1] - val, v1.m_e[2] - val);
 	}
 
 	friend Vec3 operator*(const Vec3 &v1, const Vec3 &v2) {

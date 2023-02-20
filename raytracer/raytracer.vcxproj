@@ -145,13 +145,25 @@
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ShowIncludes>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ShowIncludes>
     </ClCompile>
+	<ClCompile Include="shapes\cube.cpp" />
+	<ClCompile Include="util\hitRecord.cpp" />
+	<ClCompile Include="util\mathsHelper.cpp" />
+	<ClCompile Include="materials\dielectric.cpp" />
+    <ClCompile Include="materials\lambertian.cpp" />
+    <ClCompile Include="materials\metal.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\hitRecord.h" />
+    <ClInclude Include="materials\dielectric.h" />
+    <ClInclude Include="materials\lambertian.h" />
     <ClInclude Include="materials\material.h" />
+    <ClInclude Include="materials\metal.h" />
+	<ClInclude Include="shapes\cube.h" />
     <ClInclude Include="shapes\sphere.h" />
-    <ClInclude Include="shapes\volume.h" />
-    <ClInclude Include="util\colourHelper.h" />
-    <ClInclude Include="util\ray.h" />
+	<ClInclude Include="shapes\volume.h" />
+	<ClInclude Include="util\colourHelper.h" />
+	<ClInclude Include="util\mathsHelper.h" />
+	<ClInclude Include="util\ray.h" />
     <ClInclude Include="util\vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

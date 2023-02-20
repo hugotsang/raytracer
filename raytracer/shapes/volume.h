@@ -1,5 +1,5 @@
 #pragma once
-#include "materials/material.h"
+#include "util/hitrecord.h"
 
 class Volume {
 public:
